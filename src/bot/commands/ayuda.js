@@ -1,5 +1,24 @@
-  module.exports = async (sock, from, text, msg) => {
-    // const response = `⚠️ No entiendo tu mensaje: "${text}". Por favor, intenta con otro comando o escribe "ayuda" para ver las opciones disponibles.`;
-    const response = '🤖 Menú (comandos):\n1. *info* → Te cuento quién soy\n2. *ccpesos* → saldo de su cuenta corriente en pesos \n3. *ccdolar* → saldo de su cuenta corriente en dolares (si es que posee) \n4. *resucer* → Resumen de cereales  \n5. *fichacer* → Ficha de cereales.\n6. *ficharom* → Ficha de romaneos pendientes. \n7. *mercado* → Mercado de cereales de la cooperativa. ' 
+const mensajes = require('../../bot/mensajes');
+const { verificarUsuarioValido } = require('../../services/apiCliente');
+module.exports = async (sock, from, text, msg) => {
+   const jid = from;
+   const numero = jid.split('@')[0];
+   const cuenta = "0"
+  // Verificar si el usuario es válido
+  try {
+    const validacion = await verificarUsuarioValido(numero);
+    console.log(`:: Validación del usuario ${from}:`, validacion.usuario);
+    if (!validacion || !validacion.usuario) {
+      await sock.sendMessage(from, { text: mensajes.numero_no_asociado });
+      return;
+    }
+    const response = mensajes.menu
     await sock.sendMessage(from, { text: response });
-  };
+
+  } catch (error) {
+  
+    await sock.sendMessage(from, {
+      text: mensajes.error_solicitud
+    });
+  }
+}

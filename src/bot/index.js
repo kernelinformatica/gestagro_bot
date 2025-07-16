@@ -2,6 +2,13 @@ const makeWASocket = require('@whiskeysockets/baileys').default;
 const { useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
 const Boom = require('@hapi/boom');
 const qrcode = require('qrcode-terminal');
+const info = require('./commands/info'); // Importa el archivo ayuda.js
+const ayuda = require('./commands/ayuda'); // Importa el archivo ayuda.js
+const pesos = require('./commands/ccpesos'); // Importa el archivo ccpesos.js
+const dolar = require('./commands/ccdolar'); // Importa el archivo ccdolar.js
+const resucer = require('./commands/resucer'); // Importa el archivo ccdolar.js
+const disponible = require('./commands/disponible'); // Importa el archivo ccdolar.js
+const futuro = require('./commands/futuro'); // Importa el archivo ccdolar.js
 const { handleMessage } = require('./handlers');
 const pino = require('pino');
 const userStates = require('./userStates'); // Importa el módulo userStates
@@ -52,38 +59,45 @@ async function startBot() {
       '';
   
     console.log(`📩 Mensaje recibido de ${from}: ${text}: ${type}`);
-    // Verifica si el usuario está en estado de selección
-    const userState = userStates.getState(from);
-    /*if (userState?.estado === 'esperando_codigo') {
-      const seleccion = parseInt(text, 10);
-      const codigos = userState.codigoEmpresa;
-      console.log(userState.estado)
-      // Valida si el código ingresado es válido
-      if (Array.isArray(codigos) && codigos.includes(text)) {
-        console.log(`✅ Código válido recibido: ${text}`);
-      
-        // Guarda el código en el estado del usuario
-        userStates.setCompanyCode(from, text);
-        await sock.sendMessage(from, { text: `✅ Código ${text} registrado correctamente. Este código será válido por 1 hora.` });
-      
-       
-     
-        userStates.setState(from, { estado: 'codigo_seteado', codigoEmpresa: text });
-        setTimeout(() => {
-          userStates.clearState(from);
-          console.log(`⏳ Estado eliminado para el usuario: ${from}`);
-        }, 3600000); // 1 hora en milisegundos
-        
-      } else {
-        if(userState.estado != 'esperando_codigo') {
-          console.log('⚠️ Código inválido.');
-          await sock.sendMessage(from, { text: '⚠️ Código inválido. Por favor, intenta nuevamente.' });
-        }
-       
-      }
-      
-     
+    //const userState = userStates.getState(from);
+   
+    // Manejo de comandos específicos
+    if (text.toLowerCase() === 'ayuda' || text.toLowerCase() === 'menu' ) {
+      await ayuda(sock, from, text, msg); // Reutiliza el archivo ayuda.js
+      return;
+    }
+    if (text.toLowerCase() === 'info' ||  text.toLowerCase() === '1') {
+      await info(sock, from, text, msg); // Reutiliza el archivo ayuda.js
+      return;
+    }
+    if (text.toLowerCase() === 'pesos' || text.toLowerCase() === 'saldo pesos' || text.toLowerCase() === '2') {
+      await pesos(sock, from, text, msg); // Reutiliza el archivo ayuda.js
+      return;
+    }
+    if (text.toLowerCase() === 'dolar' || text.toLowerCase() === 'saldo dolar' || text.toLowerCase() === '3') {
+      await dolar(sock, from, text, msg); // Reutiliza el archivo ayuda.js
+      return;
+    }
+    if (text.toLowerCase() === 'cereales' || text.toLowerCase() === '4') {
+      await resucer(sock, from, text, msg); // Reutiliza el archivo ayuda.js
+      return;
+    }
+    /*if (text.toLowerCase() === 'ficha cereales' || text.toLowerCase() === '5') {
+      await fichacer(sock, from, text, msg); // Reutiliza el archivo ayuda.js
+      return;
+    }
+    if (text.toLowerCase() === 'ficha romaneos' || text.toLowerCase() === '6') {
+      await ficharom(sock, from, text, msg); // Reutiliza el archivo ayuda.js
+      return;
     }*/
+    if (text.toLowerCase() === 'disponible' || text.toLowerCase() === '7') {
+       await resucer(sock, from, text, msg); // Reutiliza el archivo ayuda.js
+       return;
+    }
+    if (text.toLowerCase() === 'futuro' || text.toLowerCase() === '8') {
+      await resucer(sock, from, text, msg); // Reutiliza el archivo ayuda.js
+      return;
+    }
     await handleMessage(sock, msg, from, text);
   });
 }
