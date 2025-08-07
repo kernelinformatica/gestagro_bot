@@ -2,7 +2,8 @@ const mensajes = require('../../bot/mensajes');
 const { verificarUsuarioValido } = require('../../services/apiCliente');
 module.exports = async (sock, from, text, msg) => {
    const jid = from;
-   const numero = jid.split('@')[0];
+   const numeroFull = jid.split('@')[0];
+   const numero = numeroFull.slice(3); 
    const cuenta = "0"
   // Verificar si el usuario es válido
   try {
